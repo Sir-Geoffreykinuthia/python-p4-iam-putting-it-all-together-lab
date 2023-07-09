@@ -1,3 +1,5 @@
+# !/usr/bin/env python3
+
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 # we import validates
@@ -13,10 +15,9 @@ class User(db.Model, SerializerMixin):
     _password_hash = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String, nullable=False)
     bio = db.Column(db.String, nullable=False)
-
-    #  have many recipes.
     recipes = db.relationship("Recipe", backref="user")
 
+    
     # Attempts to access the password_hash should be met with an AttributeError
     @hybrid_property
     def password_hash(self):
@@ -32,8 +33,8 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash,password.encode("utf-8"))
         
-    def __repr__(self):
-        return f"<User '{self.username}'>"
+     
+        
         
 class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
@@ -42,9 +43,8 @@ class Recipe(db.Model, SerializerMixin):
     title = db.Column(db.String, nullable=False)
     instructions = db.Column(db.String, nullable=False)
     minutes_to_complete = db.Column(db.Integer)
-     
-    #  a recipe belongs to a user.
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
 
     # Add validations title must be present
     @validates("title")
@@ -60,8 +60,7 @@ class Recipe(db.Model, SerializerMixin):
             raise ValueError("Instructions must be present and at least 50 characters long.")
         return instructions
         
-    def __repr__(self):
-        return f"<Recipe '{self.title}'>"
+    
 
 
 

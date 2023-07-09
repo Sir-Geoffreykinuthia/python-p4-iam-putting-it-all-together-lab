@@ -10,12 +10,12 @@ from models import User, Recipe
 
 class Signup(Resource):
     def post(self):
-        json = request.get_json()
+        json_infor = request.get_json()
         user = User(
-            username=json['username'],
-            password_hash=json['password'],
-            image_url=json.get('image_url'),
-            bio=json.get('bio')
+            username=json_infor.get['username'],
+            password_hash=json_infor.get['password'],
+            image_url=json_infor.get('image_url'),
+            bio=json_infor.get('bio')
         )
         try:
             db.session.add(user)
@@ -30,10 +30,11 @@ class Signup(Resource):
 class CheckSession(Resource):
     def get(self):
         if 'user_id' in session:
-            user = User.query.get(session['user_id'])
-            return user.to_dict(), 200
-        else:
-            return {'error': 'Unauthorized.'}, 401
+            user_id = session['user_id']
+            user = User.query.get(user_id)
+            if user:
+                return user.to_dict(), 200
+        return {'error': 'Unauthorized.'}, 401
 
     
 
